@@ -24,9 +24,24 @@ const Signup = () => {
         setConfirmPassword(e.target.value);
     }
     const handleSubmit = (e) => {
+        e.preventDefault();
+        // check to make sure passwords match
+        if ( password === confirmPassword && password.length >= 8 ) {
+            const payLoad = { name, email, password };
 
+            axios.post(`${REACT_APP_SERVER_URL}/api/users/signup`, payLoad)
+            .then(response => {
+                console.log(response.data);
+                setRedirect(true);
+            })
+            .catch(error => console.log(error))
+        } else {
+            if ( password !== confirmPassword ) alert('The password fields need to match.')
+            if ( password.length < 8 ) alert('The password needs to be at least 8 characters or more.')
+        }
     }
 
+    if (redirect) return <Redirect to='/login' />
 
     return (
         <div className="row mt-4">
